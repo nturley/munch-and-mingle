@@ -36,7 +36,7 @@ export default function Event() {
       throw new Error('No such document!')
     }
   }
-  useEffect(() => getEvent(), [eventId])
+  useEffect(() => {getEvent()}, [eventId])
   
   const pollData: PollResult[] = pollResults?.docs.map(d => ({...d.data(), name: d.id} as PollResult)) || []
   const allDays: string[] = Array.from(new Set(pollData.flatMap(p => p.dates.split(',').map(d => d.trim())))).sort()
