@@ -1,6 +1,4 @@
-import { User } from "firebase/auth"
 import { auth } from "./firebase"
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link } from "react-router-dom";
 
