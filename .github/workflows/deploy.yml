@@ -12,3 +12,9 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v1.0.7
+        with:
+          path: dist/
+      - name: Deploy GitHub Pages site
+        uses: actions/deploy-pages@v1.2.3
