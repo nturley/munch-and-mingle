@@ -13,7 +13,6 @@ export interface EventData {
   minDate: string
   maxDate: string
   id: string
-  pollResults: PollResult[]
 }
 
 export interface PollResult {
