@@ -8,7 +8,7 @@ import { auth } from "./firebase";
 
 const uiConfig = {
   signInFlow: 'popup',
-  signInSuccessUrl : '/',
+  signInSuccessUrl : '/munch-and-mingle/',
   signInOptions: [
     EmailAuthProvider.PROVIDER_ID,
   ],
