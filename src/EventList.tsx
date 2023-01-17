@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db} from './firebase'
 import { collection, getDocs } from 'firebase/firestore';
 import { Header } from './Header';
+import { Link } from 'react-router-dom';
 
 
 export interface EventData {
@@ -36,7 +37,7 @@ export default function EventList() {
   <Header/>
     <h2>Events</h2>
     <ul>
-      {events.map((e, i) => <li key={i}><a href={`/event/${e.id}`}>{e.name}</a></li>)}
+      {events.map((e, i) => <li key={i}><Link to={`/event/${e.id}`}>{e.name}</Link></li>)}
     </ul>
     </>
   )
