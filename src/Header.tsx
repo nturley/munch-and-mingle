@@ -2,6 +2,7 @@ import { User } from "firebase/auth"
 import { auth } from "./firebase"
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link } from "react-router-dom";
 
 export function Header() {
 
@@ -15,7 +16,7 @@ export function Header() {
       <div>
         <div>MBASA Munch and Mingle!</div>
         {
-          user === null || user === undefined ? <a href="/login">Sign in</a> : <span>{user.displayName} <button onClick={() => auth.signOut()}>Sign out</button></span>
+          user === null || user === undefined ? <Link to="/login">Sign in</Link> : <span>{user.displayName} <button onClick={() => auth.signOut()}>Sign out</button></span>
         }
       
       </div>
