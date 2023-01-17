@@ -6,6 +6,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
     steps:
       - uses: actions/checkout@v3
       - name: install
@@ -18,5 +21,3 @@ jobs:
           path: dist/
       - name: Deploy GitHub Pages site
         uses: actions/deploy-pages@v1.2.3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
