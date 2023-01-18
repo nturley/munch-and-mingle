@@ -7,10 +7,12 @@ export function Header() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (user === null || user === undefined)
-    return (
+    return (<>
       <div className="auth-header">
         <Link to="/login">Sign in</Link>
       </div>
+      Sign in to create events
+      </>
     );
   return (
     <div className="auth-header">

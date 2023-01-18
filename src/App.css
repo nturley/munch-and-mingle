@@ -9,7 +9,6 @@ body {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
 .text-input {
@@ -48,11 +47,13 @@ th {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  text-align: center;
 }
 
 h2,
 h3 {
   margin: 0;
+  text-align: center;
 }
 
 .auth-header {

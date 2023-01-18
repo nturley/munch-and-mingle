@@ -11,7 +11,7 @@ export default function AvailabilityTable() {
   const [pollResults] = useCollection(collection(db, `events/${eventId}/pollResults`))
   const pollData: PollResult[] = pollResults?.docs.map(d => ({...d.data(), name: d.id} as PollResult)) || []
   const allDays: string[] = Array.from(new Set(pollData.flatMap(p => p.dates.split(',').map(d => d.trim())))).sort()
-  
+  if (allDays.length === 0) return (<></>)
   return (<>
     <div>
     <h3>Group Availability</h3>
