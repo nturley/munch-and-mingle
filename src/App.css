@@ -1,3 +1,10 @@
+body {
+  background-color: #dedede;
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -11,4 +18,37 @@
   height: 22px;
   margin: 1px 0;
   padding: 2px 5px;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid #c0c4d6;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 600px;
+}
+
+td, th {
+  border: 1px solid #c0c4d6;
+  padding: 2px;
+}
+
+.availability-form > form {
+  border: 1px solid #c0c4d6;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h2, h3 {
+  margin: 0;
 }
