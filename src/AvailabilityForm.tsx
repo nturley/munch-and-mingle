@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { db} from './firebase'
 import { doc, setDoc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
-import { EventData } from './EventList';
+import { EventData } from './EventAdmin';
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import { useDocument } from 'react-firebase-hooks/firestore';
 

@@ -21,13 +21,13 @@ export interface PollResult {
 }
 
 
-export default function EventList() {
+export default function EventAdmin() {
   const [user, loading, error] = useAuthState(auth);
   const [events] = useCollection(query(collection(db, 'events'), where("owner", "==", user?user.uid:"illegal")))
   if (user === undefined || user === null ||  events === undefined) return (<Header/>)
   const eventData = events.docs.map((e) => ({...e.data(), id: e.id} as EventData))
   return (<>
-  <Header/>
+    <Header/>
     <h2>Events</h2>
     <ul>
       {eventData.map((e, i) => <li key={i}><Link to={`/event/${e.id}`}>{e.name}</Link></li>)}

@@ -1,7 +1,7 @@
 import { db} from './firebase'
 import { doc } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
-import { EventData } from './EventList';
+import { EventData } from './EventAdmin';
 import { useDocument } from 'react-firebase-hooks/firestore';
 import AvailabilityForm from './AvailabilityForm';
 import AvailabilityTable from './AvailabilityTable';

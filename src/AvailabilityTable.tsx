@@ -2,7 +2,7 @@
 import { db} from './firebase'
 import { collection } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
-import { PollResult } from './EventList';
+import { PollResult } from './EventAdmin';
 import { useCollection } from 'react-firebase-hooks/firestore';
 
 export default function AvailabilityTable() {
