@@ -55,6 +55,8 @@ function NewEventForm() {
         <DateRangeInput2
           formatDate={(d) => d.toDateString()}
           parseDate={(d) => new Date(d)}
+          shortcuts={false}
+          singleMonthOnly={true}
           value={[minDate || null, maxDate || null]}
           onChange={(d) => {
             setMinDate(d[0] || undefined);
