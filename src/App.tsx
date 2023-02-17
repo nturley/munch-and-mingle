@@ -6,7 +6,7 @@ import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@blueprintjs/datetime2/lib/css/blueprint-datetime2.css";
 
 import PocketBase from "pocketbase";
-import {Record, Admin} from "pocketbase";
+import { Record, Admin } from "pocketbase";
 import { useEffect, useState } from "react";
 import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import {
@@ -19,25 +19,22 @@ import {
   Intent,
   Navbar,
   Spinner,
+  Switch,
 } from "@blueprintjs/core";
 import { DateRangeInput2 } from "@blueprintjs/datetime2";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 
 const pb = new PocketBase("https://broad-wolf.pockethost.io");
-// nturley
-// QmxA2jehPYhWbeC
-
-
-
 
 function NewEventForm() {
   const [eventName, setEventName] = useState("");
   const [minDate, setMinDate] = useState<Date | undefined>(undefined);
   const [maxDate, setMaxDate] = useState<Date | undefined>(undefined);
+  const [includePhoneNumbers, setIncludePhoneNumbers] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    pb.collection("events").create({ event_name: eventName, minDate, maxDate });
+    pb.collection("events").create({ event_name: eventName, minDate, maxDate, include_phone: includePhoneNumbers });
     setEventName("");
     setMinDate(undefined);
     setMaxDate(undefined);
@@ -63,6 +60,7 @@ function NewEventForm() {
             setMaxDate(d[1] || undefined);
           }}
         />
+        <Switch label="Include Phone Numbers" checked={includePhoneNumbers} onChange={d => setIncludePhoneNumbers(d.currentTarget.checked)}  />
         <Button type="submit">Submit</Button>
       </form>
     </Card>
@@ -74,7 +72,6 @@ function shortDateFormat(date: Date) {
 }
 
 function EventList() {
-  
   function refreshEvents() {
     pb.collection("events")
       .getFullList(200, { sort: "-created" })
@@ -99,9 +96,8 @@ function EventList() {
     };
   }, []);
 
-
   if (events === null) return <Spinner />;
-  if (events.length === 0) return <></>
+  if (events.length === 0) return <></>;
   return (
     <Card>
       <h2>Events</h2>
@@ -118,7 +114,15 @@ function EventList() {
         <tbody>
           {events.map((record) => (
             <tr key={record.id}>
-              <td><Button small={true} intent={Intent.DANGER} onClick={e => deleteEvent(record.id)}><Icon icon="delete"/></Button></td>
+              <td>
+                <Button
+                  small={true}
+                  intent={Intent.DANGER}
+                  onClick={(e) => deleteEvent(record.id)}
+                >
+                  <Icon icon="delete" />
+                </Button>
+              </td>
               <td>
                 <Link to={`/event/${record.id}`}>{record.event_name}</Link>
               </td>
@@ -160,95 +164,155 @@ function EventView() {
   if (event === null) return <Spinner />;
   return (
     <>
-      <h2 style={{marginBottom: '0'}}>{event.event_name}</h2>
-      <h4 style={{marginTop: '0'}}>
+      <h2 style={{ marginBottom: "0" }}>{event.event_name}</h2>
+      <h4 style={{ marginTop: "0" }}>
         {shortDateFormat(new Date(event.minDate))} -{" "}
         {shortDateFormat(new Date(event.maxDate))}
       </h4>
-      <Availability event_id={event.id} />
-      <AddAvailabilityForm event_id={event.id} minDate={event.minDate} maxDate={event.maxDate}/>
+      <Availability event_id={event.id} include_phone={event.include_phone} />
+      <AddAvailabilityForm
+        event_id={event.id}
+        minDate={event.minDate}
+        maxDate={event.maxDate}
+        include_phone={event.include_phone}
+      />
     </>
   );
 }
 
-function AddAvailabilityForm({event_id, minDate, maxDate}: {event_id: string, minDate: Date, maxDate: Date}) {
-  const [dates, setDates] = useState<null|DateObject[]>(null);
+function AddAvailabilityForm({
+  event_id,
+  minDate,
+  maxDate,
+  include_phone,
+}: {
+  event_id: string;
+  minDate: Date;
+  maxDate: Date;
+  include_phone: boolean;
+}) {
+  const [dates, setDates] = useState<null | DateObject[]>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (dates === null) return;
-    pb.collection("availability").create({ event_id, name, dates:dates.join(','), phone });
+    pb.collection("availability").create({
+      event_id,
+      name,
+      dates: dates.join(","),
+      phone:phone || ' ',
+    });
   };
-  return <Card>
-    <h3>Add Your Availability</h3>
-    <form onSubmit={handleSubmit}>
-      <InputGroup placeholder="Your name" value={name} onChange={v => setName(v.target.value)}/>
-      <DatePicker
-        value={dates}
-        onChange={v => setDates(v as DateObject[])}
-        multiple={true}
-        minDate={minDate}
-        maxDate={maxDate}
-        placeholder="Click to select dates"
-        style={{height: '30px', padding: '0 10px', border: '1px solid #ccc', borderRadius: '2px'}}
-      />
-      <InputGroup placeholder="Phone number" value={phone} onChange={v => setPhone(v.target.value)}/>
-      <Button type="submit">Submit</Button>
-    </form>
-  </Card>;
+  return (
+    <Card>
+      <h3>Add Your Availability</h3>
+      <form onSubmit={handleSubmit}>
+        <InputGroup
+          placeholder="Your name"
+          value={name}
+          onChange={(v) => setName(v.target.value)}
+        />
+        <DatePicker
+          value={dates}
+          onChange={(v) => setDates(v as DateObject[])}
+          multiple={true}
+          minDate={minDate}
+          maxDate={maxDate}
+          placeholder="Click to select dates"
+          style={{
+            height: "30px",
+            padding: "0 10px",
+            border: "1px solid #ccc",
+            borderRadius: "2px",
+          }}
+        />
+        {include_phone && (
+          <InputGroup
+            placeholder="Phone number"
+            value={phone}
+            onChange={(v) => setPhone(v.target.value)}
+          />
+        )}
+        <Button type="submit">Submit</Button>
+      </form>
+    </Card>
+  );
 }
 
-function Availability({event_id}: {event_id: string}) {
+function Availability({
+  event_id,
+  include_phone,
+}: {
+  event_id: string;
+  include_phone: boolean;
+}) {
   const [availability, setAvailability] = useState<any[] | null>(null);
   useEffect(() => {
     refreshAvailability();
     pb.collection("availability").subscribe("*", function (e) {
       refreshAvailability();
-    }
-    );
+    });
   }, []);
   function refreshAvailability() {
     pb.collection("availability")
       .getFullList(200, {
         filter: `event_id = "${event_id}"`,
-        sort: "+created"
+        sort: "+created",
       })
       .then((records) => {
-        const map = Object.fromEntries(records.map((r: any) => [r.name, r]))
+        const map = Object.fromEntries(records.map((r: any) => [r.name, r]));
         setAvailability(Object.values(map));
       });
   }
 
   if (availability === null) return <Spinner />;
   if (availability.length === 0) return <></>;
-  const allDates = Array.from(new Set(availability?.flatMap((a: any) => a.dates.split(',')) || [])).sort();
+  const allDates = Array.from(
+    new Set(availability?.flatMap((a: any) => a.dates.split(",")) || [])
+  ).sort();
 
-  return <Card style={{maxWidth:'100%', overflowX:'auto'}}>
-    <h3>Group Availability</h3>
-    <HTMLTable compact={true}>
-      <thead>
-        <tr>
-          <th>Name</th>
-          {allDates.map((d: string) => <th key={d}>{shortDateFormat(new Date(d))}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {availability?.map((a: any) => <tr key={a.id}>
-          <td>{a.name}</td>
-          {allDates.map((d: string) => <td key={d}>{a.dates.split(',').includes(d) ? '✅' : '❌'}</td>)}
-        </tr>)}
-      </tbody>
-    </HTMLTable>
-    <h3>Phone Numbers</h3>
-    <ul>
-      {availability?.map((a: any) => <li key={a.id}>{a.name}: {a.phone}</li>)}
-    </ul>
-  </Card>;
+  return (
+    <Card style={{ maxWidth: "100%", overflowX: "auto" }}>
+      <h3>Group Availability</h3>
+      <HTMLTable compact={true}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            {allDates.map((d: string) => (
+              <th key={d}>{shortDateFormat(new Date(d))}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {availability?.map((a: any) => (
+            <tr key={a.id}>
+              <td>{a.name}</td>
+              {allDates.map((d: string) => (
+                <td key={d}>{a.dates.split(",").includes(d) ? "✅" : "❌"}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </HTMLTable>
+      {include_phone && (
+        <>
+          <h3>Phone Numbers</h3>
+          <ul>
+            {availability?.map((a: any) => (
+              <li key={a.id}>
+                {a.name}: {a.phone}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Card>
+  );
 }
 
 function LoginForm() {
-  return <h2>Login Form</h2>
+  return <h2>Login Form</h2>;
 }
 
 function App() {
