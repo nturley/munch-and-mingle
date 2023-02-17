@@ -1,11 +1,5 @@
-import React from "react";
-import { render } from "react-dom";
-import App from "./App";
-import "./index.css";
+import { render } from 'react-dom'
+import App from './App'
 
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-  throw new Error("No root element found");
-} else {
-  render(<App />, rootElement);
-}
+render(<App />, document.getElementById('root') as HTMLElement)
+
