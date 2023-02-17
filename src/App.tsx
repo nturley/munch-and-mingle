@@ -174,10 +174,11 @@ function EventView() {
 function AddAvailabilityForm({event_id, minDate, maxDate}: {event_id: string, minDate: Date, maxDate: Date}) {
   const [dates, setDates] = useState<null|DateObject[]>(null);
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (dates === null) return;
-    pb.collection("availability").create({ event_id, name, dates:dates.join(',') });
+    pb.collection("availability").create({ event_id, name, dates:dates.join(','), phone });
   };
   return <Card>
     <h3>Add Your Availability</h3>
@@ -191,7 +192,8 @@ function AddAvailabilityForm({event_id, minDate, maxDate}: {event_id: string, mi
         maxDate={maxDate}
         placeholder="Click to select dates"
         style={{height: '30px', padding: '0 10px', border: '1px solid #ccc', borderRadius: '2px'}}
-      /><br/>
+      />
+      <InputGroup placeholder="Phone number" value={phone} onChange={v => setPhone(v.target.value)}/>
       <Button type="submit">Submit</Button>
     </form>
   </Card>;
@@ -238,6 +240,10 @@ function Availability({event_id}: {event_id: string}) {
         </tr>)}
       </tbody>
     </HTMLTable>
+    <h3>Phone Numbers</h3>
+    <ul>
+      {availability?.map((a: any) => <li key={a.id}>{a.name}: {a.phone}</li>)}
+    </ul>
   </Card>;
 }
 
