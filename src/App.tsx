@@ -23,6 +23,8 @@ import {
 } from "@blueprintjs/core";
 import { DateRangeInput2 } from "@blueprintjs/datetime2";
 import DatePicker, { DateObject } from "react-multi-date-picker";
+import { parseISO } from 'date-fns'
+
 
 const pb = new PocketBase("https://broad-wolf.pockethost.io");
 
@@ -51,7 +53,7 @@ function NewEventForm() {
         />
         <DateRangeInput2
           formatDate={(d) => d.toDateString()}
-          parseDate={(d) => new Date(d)}
+          parseDate={(d) => parseISO(d)}
           shortcuts={false}
           singleMonthOnly={true}
           value={[minDate || null, maxDate || null]}
@@ -126,9 +128,9 @@ function EventList() {
               <td>
                 <Link to={`/event/${record.id}`}>{record.event_name}</Link>
               </td>
-              <td>{shortDateFormat(new Date(record.created))}</td>
-              <td>{shortDateFormat(new Date(record.minDate))}</td>
-              <td>{shortDateFormat(new Date(record.maxDate))}</td>
+              <td>{shortDateFormat(parseISO(record.created))}</td>
+              <td>{shortDateFormat(parseISO(record.minDate))}</td>
+              <td>{shortDateFormat(parseISO(record.maxDate))}</td>
             </tr>
           ))}
         </tbody>
@@ -166,8 +168,8 @@ function EventView() {
     <>
       <h2 style={{ marginBottom: "0" }}>{event.event_name}</h2>
       <h4 style={{ marginTop: "0" }}>
-        {shortDateFormat(new Date(event.minDate))} -{" "}
-        {shortDateFormat(new Date(event.maxDate))}
+        {shortDateFormat(parseISO(event.minDate))} -{" "}
+        {shortDateFormat(parseISO(event.maxDate))}
       </h4>
       <Availability event_id={event.id} include_phone={event.include_phone} />
       <AddAvailabilityForm
@@ -200,7 +202,7 @@ function AddAvailabilityForm({
     pb.collection("availability").create({
       event_id,
       name,
-      dates: dates.join(","),
+      dates: dates.map(d => d.toDate().toISOString()).join(","),
       phone:phone || ' ',
     });
   };
@@ -280,7 +282,7 @@ function Availability({
           <tr>
             <th>Name</th>
             {allDates.map((d: string) => (
-              <th key={d}>{shortDateFormat(new Date(d))}</th>
+              <th key={d}>{shortDateFormat(parseISO(d))}</th>
             ))}
           </tr>
         </thead>
